@@ -9,6 +9,8 @@
  * ---------------------------------------------------------------
  */
 
+export type MarketplaceMsgCreateListingResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */

@@ -46444,6 +46444,8 @@ definitions:
     description: >-
       MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount
       response type.
+  crowlabs.crow.marketplace.MsgCreateListingResponse:
+    type: object
   crowlabs.crow.marketplace.Params:
     type: object
     description: Params defines the parameters for the module.
