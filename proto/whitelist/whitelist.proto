@@ -1,0 +1,28 @@
+syntax = "proto3";
+package crowlabs.crow.whitelist;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/crow-labs/crow/x/whitelist/types";
+
+message User{
+    uint64 id = 1;
+    string address = 2;
+    string status = 3;
+    repeated uint64 pendingOrderIds = 4;
+    repeated uint64 previousOrderIds = 5;
+}
+
+message Producer{
+    uint64 id = 1;
+    string address = 2;
+    string status = 3;
+    repeated uint64 listingIds = 4;
+    repeated uint64 pendingOrderIds = 5;
+    repeated uint64 previousOrderIds = 6;
+}
+
+message Whitelist{
+    repeated User users = 1 [(gogoproto.nullable) = false];
+    repeated Produer producers  = 2 [(gogoproto.nullable) = false];
+}
