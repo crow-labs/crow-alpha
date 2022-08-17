@@ -1,12 +1,11 @@
 import { txClient, queryClient, MissingWalletError , registry} from './module'
 
-import { Params } from "./module/types/whitelist/params"
-import { User } from "./module/types/whitelist/whitelist"
-import { Producer } from "./module/types/whitelist/whitelist"
-import { Whitelist } from "./module/types/whitelist/whitelist"
+import { MarketplacePacketData } from "./module/types/marketplace/packet"
+import { NoData } from "./module/types/marketplace/packet"
+import { Params } from "./module/types/marketplace/params"
 
 
-export { Params, User, Producer, Whitelist };
+export { MarketplacePacketData, NoData, Params };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -47,10 +46,9 @@ const getDefaultState = () => {
 				Params: {},
 				
 				_Structure: {
+						MarketplacePacketData: getStructure(MarketplacePacketData.fromPartial({})),
+						NoData: getStructure(NoData.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
-						User: getStructure(User.fromPartial({})),
-						Producer: getStructure(Producer.fromPartial({})),
-						Whitelist: getStructure(Whitelist.fromPartial({})),
 						
 		},
 		_Registry: registry,
@@ -95,7 +93,7 @@ export default {
 	},
 	actions: {
 		init({ dispatch, rootGetters }) {
-			console.log('Vuex module: crowlabs.crow.whitelist initialized!')
+			console.log('Vuex module: crowlabs.crow.marketplace initialized!')
 			if (rootGetters['common/env/client']) {
 				rootGetters['common/env/client'].on('newblock', () => {
 					dispatch('StoreUpdate')
@@ -141,63 +139,7 @@ export default {
 		},
 		
 		
-		async sendMsgWhitelistUser({ rootGetters }, { value, fee = [], memo = '' }) {
-			try {
-				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgWhitelistUser(value)
-				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
-	gas: "200000" }, memo})
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWhitelistUser:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgWhitelistUser:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
-		async sendMsgWhitelistProducer({ rootGetters }, { value, fee = [], memo = '' }) {
-			try {
-				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgWhitelistProducer(value)
-				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
-	gas: "200000" }, memo})
-				return result
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWhitelistProducer:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgWhitelistProducer:Send Could not broadcast Tx: '+ e.message)
-				}
-			}
-		},
 		
-		async MsgWhitelistUser({ rootGetters }, { value }) {
-			try {
-				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgWhitelistUser(value)
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWhitelistUser:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgWhitelistUser:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgWhitelistProducer({ rootGetters }, { value }) {
-			try {
-				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgWhitelistProducer(value)
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgWhitelistProducer:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgWhitelistProducer:Create Could not create message: ' + e.message)
-				}
-			}
-		},
 		
 	}
 }
