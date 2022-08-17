@@ -1,0 +1,26 @@
+syntax = "proto3";
+package crowlabs.crow.marketplace;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/crow-labs/crow/x/marketplace/types";
+
+message Order{
+    uint64 id = 1;
+    uint64 userId = 2;
+    uint64 listingId = 3;
+    string maxPrice = 4;
+    string status = 5;
+}
+
+message Listing{
+    uint64 id = 1;
+    uint64 producerId = 2;
+    string title = 3;
+    string description = 4;
+    string minPrice = 5;
+    string status = 6;
+    repeated Order pendingOrders = 7[(gogoproto.nullable) = false];
+    Order purchaseOrder = 8[(gogoproto.nullable) = false];
+}
+
