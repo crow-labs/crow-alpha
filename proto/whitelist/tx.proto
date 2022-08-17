@@ -1,0 +1,31 @@
+syntax = "proto3";
+package crowlabs.crow.whitelist;
+
+// this line is used by starport scaffolding # proto/tx/import
+
+option go_package = "github.com/crow-labs/crow/x/whitelist/types";
+
+// Msg defines the Msg service.
+service Msg {
+      rpc WhitelistUser(MsgWhitelistUser) returns (MsgWhitelistUserResponse);
+  rpc WhitelistProducer(MsgWhitelistProducer) returns (MsgWhitelistProducerResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgWhitelistUser {
+  string creator = 1;
+  string address = 2;
+}
+
+message MsgWhitelistUserResponse {
+}
+
+message MsgWhitelistProducer {
+  string creator = 1;
+  string address = 2;
+}
+
+message MsgWhitelistProducerResponse {
+}
+
+// this line is used by starport scaffolding # proto/tx/message

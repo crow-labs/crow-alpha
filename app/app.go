@@ -99,6 +99,9 @@ import (
 	monitoringptypes "github.com/tendermint/spn/x/monitoringp/types"
 
 	"github.com/crow-labs/crow/docs"
+	whitelistmodule "github.com/crow-labs/crow/x/whitelist"
+	whitelistmodulekeeper "github.com/crow-labs/crow/x/whitelist/keeper"
+	whitelistmoduletypes "github.com/crow-labs/crow/x/whitelist/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -153,6 +156,7 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		monitoringp.AppModuleBasic{},
+		whitelistmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -225,6 +229,7 @@ type App struct {
 	ScopedTransferKeeper   capabilitykeeper.ScopedKeeper
 	ScopedMonitoringKeeper capabilitykeeper.ScopedKeeper
 
+	WhitelistKeeper whitelistmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -261,6 +266,7 @@ func New(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
+		whitelistmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -379,6 +385,16 @@ func New(
 	)
 	monitoringModule := monitoringp.NewAppModule(appCodec, app.MonitoringKeeper)
 
+	app.WhitelistKeeper = *whitelistmodulekeeper.NewKeeper(
+		appCodec,
+		keys[whitelistmoduletypes.StoreKey],
+		keys[whitelistmoduletypes.MemStoreKey],
+		app.GetSubspace(whitelistmoduletypes.ModuleName),
+
+		app.AccountKeeper,
+	)
+	whitelistModule := whitelistmodule.NewAppModule(appCodec, app.WhitelistKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -420,6 +436,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		monitoringModule,
+		whitelistModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -447,6 +464,7 @@ func New(
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		monitoringptypes.ModuleName,
+		whitelistmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -470,6 +488,7 @@ func New(
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
 		monitoringptypes.ModuleName,
+		whitelistmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -498,6 +517,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		monitoringptypes.ModuleName,
+		whitelistmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -522,6 +542,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		monitoringModule,
+		whitelistModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -711,6 +732,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(monitoringptypes.ModuleName)
+	paramsKeeper.Subspace(whitelistmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
