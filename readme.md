@@ -8,7 +8,9 @@ Amazon-like marketplace where listed items and transactions are stored and manip
 eBay-like marketplace where listed items can be sold in an auction
 
 ### Long term
-Point of sale transactions for brick and mortar stores.
+Either:
+- Platform for online stores using crow dispute voting
+- Point of sale transactions for brick and mortar stores
 ### Description
 - We have producers and users whitelists as well as a marketplace
 - A producer is a whitelisted address that can list goods on the marketplace
